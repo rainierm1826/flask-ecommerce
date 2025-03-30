@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+
 
 load_dotenv()
 
@@ -11,4 +11,3 @@ class Config:
     SQLALCHEMY_DATABASE_URI = f"postgresql://{os.getenv('USER')}:{os.getenv('PASSWORD')}@localhost:{os.getenv('PORT')}/{os.getenv('DATABASE')}"
     
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    
