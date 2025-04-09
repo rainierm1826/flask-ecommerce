@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.user_model import User
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
 
 user_bp = Blueprint('user', __name__)
@@ -34,9 +34,7 @@ def create_user():
 def sign_in():
     try:
         data = request.json
-        
         user = User.query.filter_by(email=data["email"]).first()
-        
         if not user or not user.check_password(password=data["password"]):
             return jsonify({"message": "Invalid email or password"}), 401
         
@@ -60,9 +58,12 @@ def get_users():
 
 
 
-@user_bp.route(rule="/get-user/<string:uid>", methods=["GET"])
-def get_user(uid):
+@user_bp.route(rule="/get-user", methods=["GET"])
+@jwt_required()
+def get_user():
     try:
+        uid = get_jwt_identity()
+
         user = User.query.filter_by(uid=uid).first()
         if not user:
             return jsonify({"message": "user not found"}), 409

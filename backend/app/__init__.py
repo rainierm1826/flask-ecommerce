@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from .config import Config
+from flask_cors import CORS
 
 db = SQLAlchemy()
 jwt = JWTManager()
@@ -15,6 +16,8 @@ def create_app():
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
+    
+    CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
 
     from .routes.user_routes import user_bp
     from .routes.product_routes import product_bp
